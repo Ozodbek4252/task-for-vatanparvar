@@ -16,12 +16,14 @@
 </head>
 
 <body class="{{ Auth::user()->isAdmin() ? 'admin' : '' }}">
+
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-
     <div class="container">
+
+
         @if (Auth::check() && Auth::user()->isAdmin())
             <div class="row">
                 <div class="col-sm-12">
@@ -29,7 +31,6 @@
                 </div>
             </div>
         @endif
-
         <div class="row">
             <div class="col-sm-12">
                 <div class="table-responsive">
@@ -45,15 +46,16 @@
                                 @endif
                             </tr>
                         </thead>
-                        @foreach ($products as $product)
-                            <tr>
-                                <td>{{ $loop->index + 1 }}</td>
-                                <td>{{ $product->name }}</td>
-                                <td>{{ $product->qty }}</td>
-                                <td>${{ $product->price }}</td>
-                                @if (Auth::check() && Auth::user()->isAdmin())
-                                    <td>
-                                        <a href="{{ Route('products.edit', $product->id) }}"
+                        <tbody>
+                            @foreach ($products as $product)
+                                <tr>
+                                    <td>{{ $loop->index + 1 }}</td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ $product->qty }}</td>
+                                    <td>${{ $product->price }}</td>
+                                    @if (Auth::check() && Auth::user()->isAdmin())
+                                        <td>
+                                            <a href="{{ Route('products.edit', $product->id) }}"
                                                 class="btn btn-warning">Edit</a>
                                             <form method="POST" action="{{ route('products.destroy', $product->id) }}"
                                                 style="display: inline;">
@@ -62,10 +64,11 @@
                                                 <button type="submit" class="btn btn-danger">Delete</button>
                                             </form>
 
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                            {{ $products->links() }}
                         </tbody>
                     </table>
                 </div>
@@ -73,6 +76,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 
