@@ -1,0 +1,85 @@
+# For more information: https://laravel.com/docs/sail
+version: '3.8'
+
+networks:
+    nginx_network:
+        external: true
+    internal:
+
+volumes:
+    vatan-database:
+        driver: local
+    internal-redis:
+        driver: local
+
+services:
+    vatan:
+        image: adhocore/phpfpm:8.1
+        container_name: vatan
+        working_dir: /vatan
+        restart: always
+        networks:
+            - internal
+            - nginx_network
+        volumes:
+            - '.:/vatan'
+            - './docker/php/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini'
+        links:
+            - database-1
+        depends_on:
+            - database-1
+    nginx-1:
+        image: nginx:alpine
+        container_name: nginx-1
+        restart: always
+        working_dir: /vatan
+        networks:
+            - internal
+        ports:
+            - "9001:80"
+        volumes:
+            - .:/vatan
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - vatan
+    vatan-composer:
+        image: composer:latest
+        container_name: vatan-composer
+        working_dir: /vatan
+        command: update --ignore-platform-reqs
+        volumes:
+            - .:/vatan
+        restart: on-failure
+        depends_on:
+            - vatan
+    database-1:
+        image: postgres:14.2-alpine
+        container_name: vatan-database
+        working_dir: /app
+        restart: always
+        networks:
+            - internal
+            - nginx_network
+        environment:
+            - POSTGRES_DB=app
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+        volumes:
+            - .:/app
+            - ./vatan-database:/var/lib/postgresql/data
+        ports:
+            - '8002:5432'
+    pgadmin-1:
+        container_name: pgadmin4-1
+        image: dpage/pgadmin4
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: root
+        ports:
+            - '5055:80'
+        links:
+            - database-1
+        depends_on:
+            - database-1
+
