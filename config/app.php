@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+    'vat' => 0.2,
     /*
     |--------------------------------------------------------------------------
     | Application Name

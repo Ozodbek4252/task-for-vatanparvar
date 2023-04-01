@@ -41,6 +41,7 @@
                                 <th>Product Name</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
+                                <th>VAT</th>
                                 @if (Auth::check() && Auth::user()->isAdmin())
                                     <th>Actions</th>
                                 @endif
@@ -53,6 +54,7 @@
                                     <td>{{ $product->name }}</td>
                                     <td>{{ $product->qty }}</td>
                                     <td>${{ $product->price }}</td>
+                                    <td>${{ $product->total_price_with_vat }}</td>
                                     @if (Auth::check() && Auth::user()->isAdmin())
                                         <td>
                                             <a href="{{ Route('products.edit', $product->id) }}"

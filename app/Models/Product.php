@@ -11,5 +11,9 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    
+    public function getTotalPriceWithVatAttribute()
+    {
+        $vat = config('app.vat', 0.0);
+        return $this->qty * $this->price * (1 + $vat);
+    }
 }
