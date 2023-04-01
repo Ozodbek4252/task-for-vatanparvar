@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function audits()
+    {
+        return $this->hasMany(ProductAudit::class);
+    }
 }
