@@ -39,7 +39,7 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('home');
+            return redirect()->route('products.index');
         }
 
         return back()->withErrors([
