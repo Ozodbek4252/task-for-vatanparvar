@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductAuditResource;
 use App\Models\ProductAudit;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,7 @@ class ProductAuditController extends Controller
 
         $audits = $query->get();
 
+        return ProductAuditResource::collection($audits);
         return response()->json($audits);
     }
 }
